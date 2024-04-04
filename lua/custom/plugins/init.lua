@@ -9,4 +9,4 @@ vim.g.loaded_netrwPlugin = 1
 -- optionally enable 24-bit colour
 vim.opt.termguicolors = true
 
-return { nvim_tree = require 'custom.plugins.nvim-tree', nvim_jdtls = require 'custom.plugins.nvim-jdtls' }
+return { nvim_tree = require 'custom.plugins.nvim-tree', nvim_jdtls = require 'custom.plugins.nvim-jdtls', terminal = require 'custom.plugins.terminal' }
