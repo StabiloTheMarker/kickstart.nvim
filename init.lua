@@ -840,6 +840,7 @@ require('lazy').setup({
   --
   -- MY CUSTOM PLUGINS
   require('custom.plugins').nvim_tree,
+  require('custom.plugins').nvim_jdtls,
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
