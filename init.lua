@@ -19,7 +19,6 @@
 ========                                                     ========
 =====================================================================
 =====================================================================
-
 What is Kickstart?
 
   Kickstart.nvim is *not* a distribution.
@@ -83,9 +82,6 @@ I hope you enjoy your Neovim journey,
 
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
-
--- CUSTOM KEYMAPS
-require 'custom.keymaps'
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -705,7 +701,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<Enter>'] = cmp.mapping.confirm { select = true },
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -844,6 +840,7 @@ require('lazy').setup({
   -- MY CUSTOM PLUGINS
   require('custom.plugins').nvim_tree,
   require('custom.plugins').nvim_jdtls,
+  require('custom.plugins').terminal,
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
