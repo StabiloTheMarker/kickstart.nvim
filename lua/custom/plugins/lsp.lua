@@ -1,0 +1,4 @@
+local servers = {
+  pyright = {},
+  gopls = {},
+}
