@@ -253,6 +253,13 @@ require('lazy').setup({
           group_empty = true,
         },
       }
+
+      local api = require 'nvim-tree.api'
+      vim.keymap.set('n', '<C-A-1>', api.tree.toggle)
+      vim.keymap.set('n', '<C-A-f>', function()
+        api.tree.find_file()
+        api.tree.focus()
+      end)
     end,
   },
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
