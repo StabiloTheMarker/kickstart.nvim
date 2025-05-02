@@ -4,4 +4,5 @@ local servers = {
   tsls = {},
   volar = {},
   yamlls = {},
+  intelephense = {},
 }
