@@ -6,3 +6,5 @@ local servers = {
   yamlls = {},
   intelephense = {},
 }
+
+return {}
