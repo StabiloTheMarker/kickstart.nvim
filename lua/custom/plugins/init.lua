@@ -46,4 +46,24 @@ return {
       }
     end,
   },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+  },
+  {
+    'folke/zen-mode.nvim',
+    config = function()
+      require('zen-mode').setup {
+        vim.keymap.set('n', '<leader>zen', '<cmd>ZenMode<CR>'),
+        window = {
+          width = 120, -- width of the focused code area
+          options = {
+            number = true,
+            relativenumber = true,
+          },
+        },
+      }
+    end,
+  },
 }
