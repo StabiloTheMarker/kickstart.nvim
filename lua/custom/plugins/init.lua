@@ -5,6 +5,16 @@
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+if vim.loop.os_uname().sysname == 'Windows_NT' then
+  -- Windows-specific shell (PowerShell)
+  vim.opt.shell = 'powershell'
+  vim.opt.shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command'
+  vim.opt.shellquote = ''
+  vim.opt.shellxquote = ''
+else
+  -- Linux or macOS shell (bash/zsh/fish/etc.)
+  vim.opt.shell = '/bin/bash' -- or 'zsh', 'fish', etc.
+end
 -- optionally enable 24-bit colour
 vim.opt.termguicolors = true
 
