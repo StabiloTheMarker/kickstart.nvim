@@ -673,6 +673,7 @@ require('lazy').setup({
             },
           },
         },
+        tailwindcss = {},
         volar = {
           filetypes = { 'vue' },
           init_options = {
