@@ -1,8 +1,4 @@
--- You can add your own plugins here or in other files in this directory!
---  I promise not to create any merge conflicts in this directory :)
---
--- See the kickstart.nvim README for more information
-vim.g.loaded_netrw = 1
+-- You can add your own plugins here or in other files in this directory! I promise not to create any merge conflicts in this directory :) See the kickstart.nvim README for more information vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 if vim.loop.os_uname().sysname == 'Windows_NT' then
@@ -18,6 +14,18 @@ vim.opt.termguicolors = true
 vim.keymap.set('n', 'grq', vim.lsp.buf.hover, { desc = 'Show Documentation' })
 
 return {
+  {
+    'nvim-pack/nvim-spectre',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('spectre').setup()
+
+      -- Optional: Map <leader>fg to open Spectre
+      vim.keymap.set('n', '<leader>fg', function()
+        require('spectre').open()
+      end, { desc = 'Open Spectre - Find and Replace' })
+    end,
+  },
   {
     'folke/flash.nvim',
     event = 'VeryLazy',
