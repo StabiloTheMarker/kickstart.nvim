@@ -15,6 +15,34 @@ vim.keymap.set('n', 'grq', vim.lsp.buf.hover, { desc = 'Show Documentation' })
 
 return {
   {
+    'm4xshen/hardtime.nvim',
+    lazy = false,
+    dependencies = { 'MunifTanjim/nui.nvim' },
+    opts = {},
+  },
+  {
+    'greggh/claude-code.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim', -- Required for git operations
+    },
+    config = function()
+      require('claude-code').setup()
+    end,
+  },
+  {
+    'artemave/workspace-diagnostics.nvim',
+    config = function()
+      vim.api.nvim_set_keymap('n', '<leader>x', '', {
+        noremap = true,
+        callback = function()
+          for _, client in ipairs(vim.lsp.get_clients()) do
+            require('workspace-diagnostics').populate_workspace_diagnostics(client, 0)
+          end
+        end,
+      })
+    end,
+  },
+  {
     'nvim-pack/nvim-spectre',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
@@ -69,6 +97,7 @@ return {
     config = function()
       require('toggleterm').setup {
         open_mapping = '<leader>tt',
+        direction = 'float',
       }
     end,
   },
