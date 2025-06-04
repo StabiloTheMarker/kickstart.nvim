@@ -771,10 +771,18 @@ require('lazy').setup({
           }
         end
       end,
+      formatters = {
+        phpfixer = {
+          command = './bin/phpfixer',
+          args = { '$FILENAME' }, -- optional
+          stdin = false,
+        },
+      },
       formatters_by_ft = {
         lua = { 'stylua' },
         typescsript = { 'prettier' },
         typescriptreact = { 'prettier' },
+        php = { 'phpfixer' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --

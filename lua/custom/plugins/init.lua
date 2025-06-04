@@ -15,12 +15,6 @@ vim.keymap.set('n', 'grq', vim.lsp.buf.hover, { desc = 'Show Documentation' })
 
 return {
   {
-    'm4xshen/hardtime.nvim',
-    lazy = false,
-    dependencies = { 'MunifTanjim/nui.nvim' },
-    opts = {},
-  },
-  {
     'greggh/claude-code.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim', -- Required for git operations
