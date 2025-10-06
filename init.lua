@@ -667,14 +667,10 @@ require('lazy').setup({
         pyright = {},
         terraformls = {},
         gopls = {},
-        ts_ls = {
-          typescript = {
-            preferences = {
-              importModuleSpecifier = 'non-relative',
-            },
-          },
-        },
         tailwindcss = {},
+        yamlls = {},
+        intelephense = {},
+        ts_ls = {},
         volar = {
           filetypes = { 'vue' },
           init_options = {
@@ -682,13 +678,10 @@ require('lazy').setup({
               hybridMode = false,
             },
             typescript = {
-              tsdk = '',
+              tsdk = '/home/filip/.local/share/.npm-global/lib/node_modules/typescript/lib',
             },
           },
         },
-        yamlls = {},
-        intelephense = {},
-
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -782,6 +775,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         typescsript = { 'prettier' },
         typescriptreact = { 'prettier' },
+        vue = { 'prettier' },
         php = { 'phpfixer' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
