@@ -776,7 +776,7 @@ require('lazy').setup({
         typescsript = { 'prettier' },
         typescriptreact = { 'prettier' },
         vue = { 'prettier' },
-        php = { 'phpfixer' },
+        php = { 'mago_format' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --

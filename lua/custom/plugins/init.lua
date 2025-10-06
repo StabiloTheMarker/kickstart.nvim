@@ -15,15 +15,6 @@ vim.keymap.set('n', 'grq', vim.lsp.buf.hover, { desc = 'Show Documentation' })
 
 return {
   {
-    'greggh/claude-code.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim', -- Required for git operations
-    },
-    config = function()
-      require('claude-code').setup()
-    end,
-  },
-  {
     'artemave/workspace-diagnostics.nvim',
     config = function()
       vim.api.nvim_set_keymap('n', '<leader>x', '', {
