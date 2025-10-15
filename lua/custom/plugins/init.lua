@@ -40,7 +40,7 @@ return {
     config = function()
       require('diffview').setup {
         use_icons = true,
-        watch_index = true,
+        watch_index = false,
       }
 
       -- Keymaps for diffview
