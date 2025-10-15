@@ -773,9 +773,9 @@ require('lazy').setup({
       },
       formatters_by_ft = {
         lua = { 'stylua' },
-        typescsript = { 'prettier' },
-        typescriptreact = { 'prettier' },
-        vue = { 'prettier' },
+        typescsript = { 'biome' },
+        typescriptreact = { 'biome' },
+        vue = { 'biome' },
         php = { 'mago_format' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },

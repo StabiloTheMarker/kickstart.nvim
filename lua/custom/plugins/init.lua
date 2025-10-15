@@ -83,6 +83,7 @@ return {
       require('toggleterm').setup {
         open_mapping = '<leader>tt',
         direction = 'float',
+        shell = '/run/current-system/sw/bin/fish',
       }
     end,
   },
