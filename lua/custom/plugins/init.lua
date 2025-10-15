@@ -14,6 +14,41 @@ vim.opt.termguicolors = true
 vim.keymap.set('n', 'grq', vim.lsp.buf.hover, { desc = 'Show Documentation' })
 
 return {
+  -- Git integration with fugitive
+  {
+    'tpope/vim-fugitive',
+  },
+  -- Telescope extension for git file history
+  {
+    'isak102/telescope-git-file-history.nvim',
+    dependencies = {
+      'tpope/vim-fugitive',
+    },
+    config = function()
+      require('telescope').load_extension 'git_file_history'
+
+      -- Keymap to open git file history for current buffer
+      vim.keymap.set('n', '<leader>gh', function()
+        require('telescope').extensions.git_file_history.git_file_history()
+      end, { desc = '[G]it File [H]istory' })
+    end,
+  },
+  -- Diffview for comprehensive git diff viewing
+  {
+    'sindrets/diffview.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('diffview').setup {
+        use_icons = true,
+        watch_index = true,
+      }
+
+      -- Keymaps for diffview
+      vim.keymap.set('n', '<leader>gd', '<cmd>DiffviewOpen<CR>', { desc = '[G]it [D]iff View' })
+      vim.keymap.set('n', '<leader>gH', '<cmd>DiffviewFileHistory %<CR>', { desc = '[G]it File [H]istory (Diffview)' })
+      vim.keymap.set('n', '<leader>gq', '<cmd>DiffviewClose<CR>', { desc = '[G]it Diffview [Q]uit' })
+    end,
+  },
   {
     'artemave/workspace-diagnostics.nvim',
     config = function()
