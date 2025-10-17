@@ -673,6 +673,9 @@ require('lazy').setup({
         ts_ls = {},
         volar = {
           filetypes = { 'vue' },
+          capabilities = {
+            offsetEncoding = 'utf-16',
+          },
           init_options = {
             vue = {
               hybridMode = false,
@@ -721,6 +724,14 @@ require('lazy').setup({
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
         automatic_installation = false,
         handlers = {
+          -- Custom handler for volar -> vue_ls mapping (nvim-lspconfig 3.0 renamed it)
+          volar = function()
+            local server = servers.volar or {}
+            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+            vim.lsp.config.vue_ls = server
+            vim.lsp.enable 'vue_ls'
+          end,
+          -- Default handler for all other servers
           function(server_name)
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
