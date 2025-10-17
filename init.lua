@@ -717,6 +717,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'biome', -- Used to format TypeScript, Vue, and TSX code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -785,7 +786,7 @@ require('lazy').setup({
       },
       formatters_by_ft = {
         lua = { 'stylua' },
-        typescsript = { 'biome' },
+        typescript = { 'biome' },
         typescriptreact = { 'biome' },
         vue = { 'biome' },
         php = { 'mago_format' },
