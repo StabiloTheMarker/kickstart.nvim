@@ -670,20 +670,25 @@ require('lazy').setup({
         tailwindcss = {},
         yamlls = {},
         intelephense = {},
-        ts_ls = {},
+        vtsls = {
+          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+          settings = {
+            vtsls = {
+              tsserver = {
+                globalPlugins = {
+                  {
+                    name = '@vue/typescript-plugin',
+                    location = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server',
+                    languages = { 'vue' },
+                    configNamespace = 'typescript',
+                  },
+                },
+              },
+            },
+          },
+        },
         volar = {
           filetypes = { 'vue' },
-          capabilities = {
-            offsetEncoding = 'utf-16',
-          },
-          init_options = {
-            vue = {
-              hybridMode = false,
-            },
-            typescript = {
-              tsdk = '/home/filip/.local/share/.npm-global/lib/node_modules/typescript/lib',
-            },
-          },
         },
         lua_ls = {
           -- cmd = { ... },
@@ -731,6 +736,10 @@ require('lazy').setup({
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             vim.lsp.config.vue_ls = server
             vim.lsp.enable 'vue_ls'
+          end,
+          -- Disable biome LSP (only use it as a formatter via Conform)
+          biome = function()
+            -- Do nothing - biome is only used as a formatter, not an LSP
           end,
           -- Default handler for all other servers
           function(server_name)
