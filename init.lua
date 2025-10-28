@@ -170,6 +170,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Show [L]ine diagnostics' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -623,7 +624,11 @@ require('lazy').setup({
       -- See :help vim.diagnostic.Opts
       vim.diagnostic.config {
         severity_sort = true,
-        float = { border = 'rounded', source = 'if_many' },
+        float = {
+          border = 'rounded',
+          source = 'if_many',
+          wrap = true,  -- Enable text wrapping in float window
+        },
         underline = { severity = vim.diagnostic.severity.ERROR },
         signs = vim.g.have_nerd_font and {
           text = {
@@ -637,13 +642,15 @@ require('lazy').setup({
           source = 'if_many',
           spacing = 2,
           format = function(diagnostic)
-            local diagnostic_message = {
-              [vim.diagnostic.severity.ERROR] = diagnostic.message,
-              [vim.diagnostic.severity.WARN] = diagnostic.message,
-              [vim.diagnostic.severity.INFO] = diagnostic.message,
-              [vim.diagnostic.severity.HINT] = diagnostic.message,
-            }
-            return diagnostic_message[diagnostic.severity]
+            local message = diagnostic.message
+            local max_width = 80
+
+            -- Truncate message if it's too long
+            if #message > max_width then
+              message = message:sub(1, max_width - 3) .. '...'
+            end
+
+            return message
           end,
         },
       }
@@ -795,9 +802,9 @@ require('lazy').setup({
       },
       formatters_by_ft = {
         lua = { 'stylua' },
-        typescript = { 'biome' },
-        typescriptreact = { 'biome' },
-        vue = { 'biome' },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        vue = { 'prettier' },
         php = { 'mago_format' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
