@@ -115,10 +115,13 @@ return {
     'akinsho/toggleterm.nvim',
     version = '*',
     config = function()
+      -- Use Fish shell if available, otherwise use default shell
+      local shell = vim.fn.executable 'fish' == 1 and 'fish' or vim.o.shell
+
       require('toggleterm').setup {
         open_mapping = '<leader>tt',
         direction = 'float',
-        shell = '/run/current-system/sw/bin/fish',
+        shell = shell,
       }
     end,
   },

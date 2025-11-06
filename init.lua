@@ -744,6 +744,7 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'biome', -- Used to format TypeScript, Vue, and TSX code
+        'black', -- Used to format Python code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -820,6 +821,7 @@ require('lazy').setup({
         typescriptreact = { 'prettier' },
         vue = { 'prettier' },
         php = { 'mago_format' },
+        python = { 'black' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
