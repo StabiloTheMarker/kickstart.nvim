@@ -627,7 +627,7 @@ require('lazy').setup({
         float = {
           border = 'rounded',
           source = 'if_many',
-          wrap = true,  -- Enable text wrapping in float window
+          wrap = true, -- Enable text wrapping in float window
         },
         underline = { severity = vim.diagnostic.severity.ERROR },
         signs = vim.g.have_nerd_font and {
@@ -671,7 +671,21 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        pyright = {},
+        pyright = {
+          settings = {
+            python = {
+              -- Set this to the path of your virtual environment's Python executable.
+              -- This example uses Lua's `os.getenv` to look for a VENV path set by a shell (like direnv/venv-wrapper),
+              -- or defaults to a common relative path. Adjust this to your environment.
+              pythonPath = os.getenv 'VIRTUAL_ENV' and os.getenv 'VIRTUAL_ENV' .. '/bin/python' or '.\\venv\\bin\\python',
+              analysis = {
+                -- It's often best to let Pyright manage finding stubs, but ensure it uses the right path.
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+              },
+            },
+          },
+        },
         terraformls = {},
         gopls = {},
         tailwindcss = {},
