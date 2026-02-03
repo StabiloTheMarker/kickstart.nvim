@@ -131,6 +131,12 @@ vim.opt.smartcase = true
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
 
+-- Fold settings for nvim-ufo
+vim.opt.foldcolumn = '1' -- Show fold column
+vim.opt.foldlevel = 99 -- Using ufo provider need a large value
+vim.opt.foldlevelstart = 99 -- Open files with all folds open
+vim.opt.foldenable = true -- Enable folding
+
 -- Decrease update time
 vim.opt.updatetime = 250
 

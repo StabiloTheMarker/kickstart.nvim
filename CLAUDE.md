@@ -59,6 +59,7 @@ This is a personal Neovim configuration based on kickstart.nvim. It's a single-f
 - **nvim-spectre**: Find and replace (`<leader>fg`)
 - **workspace-diagnostics**: Workspace-wide diagnostics (`<leader>x`)
 - **zen-mode**: Distraction-free writing (`<leader>zen`)
+- **nvim-ufo**: Advanced code folding with Treesitter/LSP support and custom fold text display
 
 ## Common Commands
 
@@ -116,6 +117,15 @@ nvim --headless +q 2>&1  # Test for startup errors
 
 ### Toggle
 - `<leader>th`: Toggle inlay hints
+
+### Folding (nvim-ufo)
+- `za`: Toggle fold under cursor
+- `zo`: Open fold under cursor
+- `zc`: Close fold under cursor
+- `zR`: Open all folds
+- `zM`: Close all folds
+- `zr`: Open one fold level
+- `zm`: Close one fold level
 
 ## Important Configuration Details
 
