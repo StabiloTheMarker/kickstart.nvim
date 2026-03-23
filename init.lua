@@ -167,6 +167,9 @@ vim.opt.scrolloff = 10
 -- See `:help 'confirm'`
 vim.opt.confirm = true
 
+-- Register Nushell filetype for treesitter auto-install
+vim.filetype.add({ extension = { nu = 'nu' } })
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -756,6 +759,14 @@ require('lazy').setup({
           end,
         },
       }
+
+      -- Non-Mason LSP servers (installed externally)
+      vim.lsp.config.nushell = {
+        cmd = { 'nu', '--lsp' },
+        filetypes = { 'nu' },
+        capabilities = capabilities,
+      }
+      vim.lsp.enable 'nushell'
     end,
   },
 
@@ -997,9 +1008,18 @@ require('lazy').setup({
           'query',
           'vim',
           'vimdoc',
+          'nu',
         },
         auto_install = true,
       }
+
+      -- Enable treesitter highlighting for filetypes not bundled with Neovim
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'nu' },
+        callback = function()
+          pcall(vim.treesitter.start)
+        end,
+      })
     end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
