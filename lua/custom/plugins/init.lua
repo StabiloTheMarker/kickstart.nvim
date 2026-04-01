@@ -145,6 +145,16 @@ return {
       }
     end,
   },
+  -- Better vim.ui.input (replaces default input prompt with a nice floating window)
+  {
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      input = { enabled = true },
+    },
+  },
   -- Code folding with nvim-ufo
   {
     'kevinhwang91/nvim-ufo',
