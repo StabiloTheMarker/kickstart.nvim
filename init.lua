@@ -641,6 +641,17 @@ require('lazy').setup({
         capabilities = capabilities,
       }
       vim.lsp.enable 'nushell'
+
+      vim.lsp.config.rust_analyzer = {
+        cmd = { 'rust-analyzer' },
+        filetypes = { 'rust' },
+        root_markers = { 'Cargo.toml', 'rust-project.json' },
+        capabilities = capabilities,
+        settings = {
+          ['rust-analyzer'] = {},
+        },
+      }
+      vim.lsp.enable 'rust_analyzer'
     end,
   },
 
@@ -870,6 +881,7 @@ require('lazy').setup({
           'c',
           'vue',
           'go',
+          'rust',
           'typescript',
           'php',
           'python',
