@@ -110,6 +110,25 @@ return {
       picker = { enabled = true },
       explorer = { enabled = true },
       scroll = { enabled = true },
+      dashboard = {
+        preset = {
+          keys = {
+            { icon = ' ', key = 'f', desc = 'Find File', action = ':lua Snacks.picker.files()' },
+            { icon = ' ', key = 'g', desc = 'Find Text', action = ':lua Snacks.picker.grep()' },
+            { icon = ' ', key = 'r', desc = 'Recent Files', action = ':lua Snacks.picker.recent()' },
+            { icon = ' ', key = 'c', desc = 'Config', action = ':lua Snacks.picker.files({ cwd = vim.fn.stdpath("config") })' },
+            { icon = '󰒲 ', key = 'l', desc = 'Lazy', action = ':Lazy' },
+            { icon = ' ', key = 'm', desc = 'Mason', action = ':Mason' },
+            { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
+          },
+        },
+        sections = {
+          { section = 'header' },
+          { section = 'keys', gap = 1, padding = 1 },
+          { section = 'recent_files', title = 'Recent Files', limit = 5, padding = 1 },
+          { section = 'startup' },
+        },
+      },
       terminal = {
         shell = vim.fn.executable 'fish' == 1 and 'fish' or vim.o.shell,
         win = { style = 'float' },
