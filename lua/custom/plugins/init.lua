@@ -1,6 +1,4 @@
--- You can add your own plugins here or in other files in this directory! I promise not to create any merge conflicts in this directory :) See the kickstart.nvim README for more information vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
+-- You can add your own plugins here or in other files in this directory! I promise not to create any merge conflicts in this directory :) See the kickstart.nvim README for more information
 if vim.loop.os_uname().sysname == 'Windows_NT' then
   -- Windows-specific shell (PowerShell)
   vim.opt.shell = 'powershell'
@@ -18,18 +16,12 @@ return {
   {
     'tpope/vim-fugitive',
   },
-  -- Telescope extension for git file history
+  -- Git file history (using snacks picker git log)
   {
-    'isak102/telescope-git-file-history.nvim',
-    dependencies = {
-      'tpope/vim-fugitive',
-    },
+    'tpope/vim-fugitive',
     config = function()
-      require('telescope').load_extension 'git_file_history'
-
-      -- Keymap to open git file history for current buffer
       vim.keymap.set('n', '<leader>gh', function()
-        require('telescope').extensions.git_file_history.git_file_history()
+        Snacks.picker.git_log { current_file = true }
       end, { desc = '[G]it File [H]istory' })
     end,
   },
@@ -85,46 +77,8 @@ return {
     { "<C-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
   },
   },
-  {
-    'nvim-tree/nvim-tree.lua',
-    config = function()
-      require('nvim-tree').setup {
-        sort = {
-          sorter = 'case_sensitive',
-        },
-        view = {
-          width = 35,
-        },
-        renderer = {
-          group_empty = true,
-        },
-        filters = {
-          git_ignored = false,
-        },
-      }
-
-      local api = require 'nvim-tree.api'
-      vim.keymap.set('n', '<leader>tf', api.tree.toggle, { desc = '[T]oggle File Tree' })
-      vim.keymap.set('n', '<leader>ff', function()
-        api.tree.find_file()
-        api.tree.focus()
-      end, { desc = '[F]ind current buffer in FileTree' })
-    end,
-  },
-  {
-    'akinsho/toggleterm.nvim',
-    version = '*',
-    config = function()
-      -- Use Fish shell if available, otherwise use default shell
-      local shell = vim.fn.executable 'fish' == 1 and 'fish' or vim.o.shell
-
-      require('toggleterm').setup {
-        open_mapping = '<leader>tt',
-        direction = 'float',
-        shell = shell,
-      }
-    end,
-  },
+  -- NOTE: File explorer provided by snacks.nvim explorer (see snacks config above)
+  -- NOTE: Terminal provided by snacks.nvim (see snacks config above)
   {
     'windwp/nvim-autopairs',
     event = 'InsertEnter',
@@ -153,6 +107,39 @@ return {
     ---@type snacks.Config
     opts = {
       input = { enabled = true },
+      picker = { enabled = true },
+      explorer = { enabled = true },
+      scroll = { enabled = true },
+      terminal = {
+        shell = vim.fn.executable 'fish' == 1 and 'fish' or vim.o.shell,
+        win = { style = 'float' },
+      },
+    },
+    keys = {
+      { '<leader>sh', function() Snacks.picker.help() end, desc = '[S]earch [H]elp' },
+      { '<leader>sk', function() Snacks.picker.keymaps() end, desc = '[S]earch [K]eymaps' },
+      { '<leader>sf', function() Snacks.picker.files() end, desc = '[S]earch [F]iles' },
+      { '<leader>sa', function() Snacks.picker.files({ hidden = true, ignored = true }) end, desc = '[S]earch [A]ll files (hidden + ignored)' },
+      { '<leader>ss', function() Snacks.picker.pickers() end, desc = '[S]earch [S]elect Picker' },
+      { '<leader>sw', function() Snacks.picker.grep_word() end, desc = '[S]earch current [W]ord' },
+      { '<leader>sg', function() Snacks.picker.grep() end, desc = '[S]earch by [G]rep' },
+      { '<leader>sd', function() Snacks.picker.diagnostics() end, desc = '[S]earch [D]iagnostics' },
+      { '<leader>sr', function() Snacks.picker.resume() end, desc = '[S]earch [R]esume' },
+      { '<leader>s.', function() Snacks.picker.recent() end, desc = '[S]earch Recent Files' },
+      { '<leader><leader>', function() Snacks.picker.buffers() end, desc = '[ ] Find existing buffers' },
+      { '<leader>/', function() Snacks.picker.lines() end, desc = '[/] Fuzzily search in current buffer' },
+      { '<leader>s/', function() Snacks.picker.grep_buffers() end, desc = '[S]earch [/] in Open Files' },
+      { '<leader>sn', function() Snacks.picker.files({ cwd = vim.fn.stdpath 'config' }) end, desc = '[S]earch [N]eovim files' },
+      -- LSP pickers
+      { 'grd', function() Snacks.picker.lsp_definitions() end, desc = '[G]oto [D]efinition' },
+      { 'grr', function() Snacks.picker.lsp_references() end, desc = '[G]oto [R]eferences' },
+      { 'gri', function() Snacks.picker.lsp_implementations() end, desc = '[G]oto [I]mplementation' },
+      { 'grt', function() Snacks.picker.lsp_type_definitions() end, desc = '[G]oto [T]ype Definition' },
+      { 'gO', function() Snacks.picker.lsp_symbols() end, desc = 'Open Document Symbols' },
+      { 'gW', function() Snacks.picker.lsp_workspace_symbols() end, desc = 'Open Workspace Symbols' },
+      { '<leader>tf', function() Snacks.explorer() end, desc = '[T]oggle File Tree' },
+      { '<leader>ff', function() Snacks.explorer.reveal() end, desc = '[F]ind current buffer in FileTree' },
+      { '<leader>tt', function() Snacks.terminal.toggle() end, desc = '[T]oggle [T]erminal', mode = { 'n', 't' } },
     },
   },
   -- Code folding with nvim-ufo
