@@ -44,7 +44,7 @@ return {
   {
     'artemave/workspace-diagnostics.nvim',
     config = function()
-      vim.api.nvim_set_keymap('n', '<leader>x', '', {
+      vim.api.nvim_set_keymap('n', '<leader>xw', '', {
         noremap = true,
         callback = function()
           for _, client in ipairs(vim.lsp.get_clients()) do
@@ -159,6 +159,19 @@ return {
       { '<leader>tf', function() Snacks.explorer() end, desc = '[T]oggle File Tree' },
       { '<leader>ff', function() Snacks.explorer.reveal() end, desc = '[F]ind current buffer in FileTree' },
       { '<leader>tt', function() Snacks.terminal.toggle() end, desc = '[T]oggle [T]erminal', mode = { 'n', 't' } },
+    },
+  },
+  -- Diagnostics list
+  {
+    'folke/trouble.nvim',
+    opts = {},
+    cmd = 'Trouble',
+    keys = {
+      { '<leader>xx', '<cmd>Trouble diagnostics toggle<cr>', desc = 'Diagnostics (Trouble)' },
+      { '<leader>xX', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = 'Buffer Diagnostics (Trouble)' },
+      { '<leader>cs', '<cmd>Trouble symbols toggle focus=false win.size=0.3<cr>', desc = 'Symbols (Trouble)' },
+      { '<leader>cl', '<cmd>Trouble lsp toggle focus=false win.position=right<cr>', desc = 'LSP Definitions/References (Trouble)' },
+      { '<leader>xQ', '<cmd>Trouble qflist toggle<cr>', desc = 'Quickfix List (Trouble)' },
     },
   },
   -- Code folding with nvim-ufo
