@@ -545,7 +545,6 @@ require('lazy').setup({
           },
         },
         terraformls = {},
-        gopls = {},
         tailwindcss = {},
         yamlls = {},
         intelephense = {},
