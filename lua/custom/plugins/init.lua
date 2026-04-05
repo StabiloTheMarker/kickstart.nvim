@@ -107,7 +107,15 @@ return {
     ---@type snacks.Config
     opts = {
       input = { enabled = true },
-      picker = { enabled = true },
+      picker = {
+        enabled = true,
+        sources = {
+          explorer = {
+            ignored = true,
+            hidden = true,
+          },
+        },
+      },
       explorer = { enabled = true },
       scroll = { enabled = true },
       dashboard = {
@@ -224,5 +232,27 @@ return {
       vim.keymap.set('n', 'zr', require('ufo').openFoldsExceptKinds, { desc = 'Open folds (one level)' })
       vim.keymap.set('n', 'zm', require('ufo').closeFoldsWith, { desc = 'Close folds (one level)' })
     end,
+  },
+  -- CSV viewer with column alignment
+  {
+    'hat0uma/csvview.nvim',
+    ft = { 'csv', 'tsv' },
+    opts = {
+      parser = {
+        delimiter = {
+          default = ',',
+          ft = {
+            tsv = '\t',
+          },
+          fallbacks = { ';', ',', '\t', '|' },
+        },
+      },
+      view = {
+        display_mode = 'border',
+      },
+    },
+    keys = {
+      { '<leader>cv', '<cmd>CsvViewToggle<cr>', desc = '[C]sv [V]iew Toggle' },
+    },
   },
 }
