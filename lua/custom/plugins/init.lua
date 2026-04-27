@@ -165,7 +165,6 @@ return {
       { 'gO', function() Snacks.picker.lsp_symbols() end, desc = 'Open Document Symbols' },
       { 'gW', function() Snacks.picker.lsp_workspace_symbols() end, desc = 'Open Workspace Symbols' },
       { '<leader>tf', function() Snacks.explorer() end, desc = '[T]oggle File Tree' },
-      { '<leader>ff', function() Snacks.explorer.reveal() end, desc = '[F]ind current buffer in FileTree' },
       { '<leader>tt', function() Snacks.terminal.toggle() end, desc = '[T]oggle [T]erminal', mode = { 'n', 't' } },
     },
   },
