@@ -496,21 +496,7 @@ require('lazy').setup({
             [vim.diagnostic.severity.HINT] = '󰌶 ',
           },
         } or {},
-        virtual_text = {
-          source = 'if_many',
-          spacing = 2,
-          format = function(diagnostic)
-            local message = diagnostic.message
-            local max_width = 80
-
-            -- Truncate message if it's too long
-            if #message > max_width then
-              message = message:sub(1, max_width - 3) .. '...'
-            end
-
-            return message
-          end,
-        },
+        virtual_lines = { current_line = true },
       }
 
       -- LSP servers and clients are able to communicate to each other what features they support.
