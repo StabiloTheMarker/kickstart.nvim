@@ -516,19 +516,71 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         pyright = {
-          settings = {
-            python = {
-              -- Set this to the path of your virtual environment's Python executable.
-              -- This example uses Lua's `os.getenv` to look for a VENV path set by a shell (like direnv/venv-wrapper),
-              -- or defaults to a common relative path. Adjust this to your environment.
-              pythonPath = os.getenv 'VIRTUAL_ENV' and os.getenv 'VIRTUAL_ENV' .. '/bin/python' or '.\\venv\\bin\\python',
-              analysis = {
-                -- It's often best to let Pyright manage finding stubs, but ensure it uses the right path.
-                autoSearchPaths = true,
-                useLibraryCodeForTypes = true,
+          before_init = function(_, config)
+            -- nvim-lspconfig 3.0+ resolves root_dir asynchronously, so config.root_dir
+            -- is nil here. Find the project root ourselves from the current buffer.
+            local root = vim.fs.root(0, {
+              'pyproject.toml',
+              'setup.py',
+              'setup.cfg',
+              'requirements.txt',
+              'Pipfile',
+              'pyrightconfig.json',
+              '.git',
+            }) or config.root_dir or vim.fn.getcwd()
+            local function exists(p)
+              return vim.fn.filereadable(p) == 1
+            end
+            local candidates = {
+              { dir = '.venv', path = root .. '/.venv/bin/python' },
+              { dir = 'venv', path = root .. '/venv/bin/python' },
+              { dir = '.venv', path = root .. '/.venv/Scripts/python.exe' },
+              { dir = 'venv', path = root .. '/venv/Scripts/python.exe' },
+            }
+            local python_path, venv_dir
+            for _, c in ipairs(candidates) do
+              if exists(c.path) then
+                python_path = c.path
+                venv_dir = c.dir
+                break
+              end
+            end
+            if not python_path and os.getenv 'VIRTUAL_ENV' then
+              python_path = os.getenv 'VIRTUAL_ENV' .. '/bin/python'
+            end
+            -- Pyright ignores python.pythonPath from workspace settings for venv-based
+            -- import resolution; it only reads pyrightconfig.json (or pyproject.toml
+            -- [tool.pyright]). If we found a project-local venv and no config exists,
+            -- drop a minimal pyrightconfig.json so imports resolve out of the box.
+            if venv_dir and not exists(root .. '/pyrightconfig.json') then
+              local has_pyright_in_pyproject = false
+              local pyproject = root .. '/pyproject.toml'
+              if exists(pyproject) then
+                for line in io.lines(pyproject) do
+                  if line:match '^%s*%[tool%.pyright%]' then
+                    has_pyright_in_pyproject = true
+                    break
+                  end
+                end
+              end
+              if not has_pyright_in_pyproject then
+                local f = io.open(root .. '/pyrightconfig.json', 'w')
+                if f then
+                  f:write(string.format('{ "venvPath": ".", "venv": "%s" }\n', venv_dir))
+                  f:close()
+                end
+              end
+            end
+            config.settings = vim.tbl_deep_extend('force', config.settings or {}, {
+              python = {
+                pythonPath = python_path,
+                analysis = {
+                  autoSearchPaths = true,
+                  useLibraryCodeForTypes = true,
+                },
               },
-            },
-          },
+            })
+          end,
         },
         terraformls = {},
         tailwindcss = {},
