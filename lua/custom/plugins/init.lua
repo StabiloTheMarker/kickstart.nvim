@@ -264,6 +264,7 @@ return {
       { '<leader>as', '<cmd>ClaudeCodeSend<cr>', mode = 'v', desc = 'Send selection' },
       { '<leader>aa', '<cmd>ClaudeCodeDiffAccept<cr>', desc = 'Accept diff' },
       { '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>', desc = 'Deny diff' },
+      { '<C-a>f', [[<C-\><C-n><C-w>p]], mode = 't', desc = 'Focus away from Claude' },
     },
   },
   -- CSV viewer with column alignment

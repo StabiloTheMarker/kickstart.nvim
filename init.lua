@@ -623,6 +623,9 @@ require('lazy').setup({
             },
           },
         },
+        sqlls = {
+          filetypes = { 'sql', 'mysql' },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -643,6 +646,7 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'biome', -- Used to format TypeScript, Vue, and TSX code
         'black', -- Used to format Python code
+        'sql-formatter', -- Used to format SQL code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -739,6 +743,8 @@ require('lazy').setup({
         vue = { 'prettier' },
         php = { 'mago_format' },
         python = { 'black' },
+        sql = { 'sql_formatter' },
+        mysql = { 'sql_formatter' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
