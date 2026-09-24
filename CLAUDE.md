@@ -4,62 +4,60 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a personal Neovim configuration based on kickstart.nvim. It's a single-file configuration (`init.lua`) with optional modular plugins in `lua/custom/plugins/` and example plugins in `lua/kickstart/plugins/`. This is **not** a Neovim distribution but a starting point for personal configuration.
+This is a personal Neovim configuration based on kickstart.nvim. Core settings, keymaps, autocommands and most plugin definitions live in `init.lua`; additional plugins live in `lua/custom/plugins/`, with optional kickstart examples in `lua/kickstart/plugins/`. This is **not** a Neovim distribution but a starting point for personal configuration.
+
+Line numbers drift as the config changes, so this file refers to sections by name — grep for them.
 
 ## Architecture
 
 ### Core Configuration Structure
 
-- **`init.lua`**: The main configuration file (lines 1-332). All core settings, keymaps, autocommands, and plugin definitions are here. This is intentionally a single file for teaching purposes.
-- **`lua/custom/plugins/*.lua`**: User's custom plugin configurations that extend the base setup
-  - `init.lua`: Additional custom plugins (nvim-tree, toggleterm, flash.nvim, nvim-spectre, workspace-diagnostics, zen-mode)
-  - `lsp.lua`: Currently empty but available for LSP overrides
-- **`lua/kickstart/plugins/*.lua`**: Optional example plugins (autopairs, debug, gitsigns, indent_line, lint, neo-tree) that can be enabled by uncommenting them in init.lua:292-297
+- **`init.lua`**: Options, keymaps, autocommands, and the `require('lazy').setup({...})` plugin list (LSP, completion, formatting, treesitter, mini.nvim, which-key, colorscheme).
+- **`lua/custom/plugins/*.lua`**: Plugin specs, auto-imported via `{ import = 'custom.plugins' }`. Every file here must return a lazy.nvim spec table — put plain helper modules elsewhere.
+  - `init.lua`: snacks.nvim, fugitive, diffview, workspace-diagnostics, spectre, flash, autopairs, zen-mode, trouble, nvim-ufo, claudecode.nvim, csvview
+  - `gitsigns.lua`: gitsigns with hunk keymaps
+  - `markdown.lua`: markdown-preview.nvim
+  - `lsp.lua`: commented-out leftovers, not active
+- **`lua/custom/search.lua`**: Helper module (not a plugin spec) for the snacks grep/files pickers — result ranking and the filetype filter action.
+- **`lua/kickstart/plugins/*.lua`**: Optional kickstart examples, enabled by uncommenting their `require 'kickstart.plugins.<name>'` lines near the end of the lazy setup in `init.lua`. All are currently disabled.
 
 ### Plugin Management
 
-- Uses **lazy.nvim** as the plugin manager (setup at init.lua:240)
-- Plugins are auto-installed on first run
-- Custom plugins are imported via `{ import = 'custom.plugins' }` at init.lua:303
+- **lazy.nvim** is the plugin manager; plugins auto-install on first run.
+- Versions are pinned in `lazy-lock.json`.
 
 ### LSP Configuration (Neovim 0.11+)
 
-**IMPORTANT**: This config uses Neovim 0.11+ which requires the new `vim.lsp.config` API instead of the deprecated `require('lspconfig')` pattern.
+**IMPORTANT**: This config uses the Neovim 0.11+ `vim.lsp.config` API, not the deprecated `require('lspconfig')[name].setup()` pattern.
 
-- LSP setup is in init.lua:471-735
-- Uses **Mason** for LSP/tool installation (mason.nvim v1.11.0, mason-lspconfig.nvim v1.32.0)
-- Language servers configured in the `servers` table (init.lua:666-699):
-  - pyright (Python)
-  - terraformls (Terraform)
-  - gopls (Go)
-  - tailwindcss (CSS)
-  - yamlls (YAML)
-  - intelephense (PHP)
-  - ts_ls (TypeScript)
-  - volar (Vue.js with hybrid mode disabled)
-  - lua_ls (Lua)
-- LSP setup uses `vim.lsp.config[server_name] = server` pattern at init.lua:730 (NOT `require('lspconfig')[server_name].setup()`)
-- Completions powered by **blink.cmp** with **LuaSnip** for snippets
+- Servers are configured in the `servers` table inside the `nvim-lspconfig` spec in `init.lua`, installed by **Mason** (mason.nvim v1.11.0, mason-lspconfig.nvim v1.32.0) via mason-tool-installer.
+- Mason-managed servers: pyright, terraformls, tailwindcss, yamlls, intelephense, clangd, vtsls, volar, lua_ls, sqlls.
+- The mason-lspconfig default handler does `vim.lsp.config[server_name] = server` + `vim.lsp.enable(server_name)`.
+- Special handlers:
+  - `volar` is registered as `vue_ls` (nvim-lspconfig renamed it).
+  - `biome` LSP is disabled — biome is installed only as a formatter tool.
+- Vue: vtsls handles TS/JS **and** `.vue` files through the `@vue/typescript-plugin` global plugin (loaded from Mason's vue-language-server package); vue_ls runs alongside for `.vue`.
+- Non-Mason servers (installed externally): `nushell` (`nu --lsp`) and `rust_analyzer`.
+- Completions: **blink.cmp** with **LuaSnip**.
 
-### Key Plugins
+### Search: snacks.picker (Telescope was removed)
 
-- **Telescope**: Fuzzy finder for files, LSP symbols, diagnostics (init.lua:354-456)
-- **Treesitter**: Syntax highlighting and code understanding (init.lua:241-281)
-- **Conform.nvim**: Code formatting with formatters configured per filetype (init.lua:737-836)
-  - Custom PHP formatter: `./bin/phpfixer` (configured at init.lua:758-763)
-  - Format on save enabled (except for C/C++)
-- **Mini.nvim**: Provides statusline, surround, and text objects (init.lua:204-240)
-- **Which-key**: Displays pending keybinds (init.lua:294-345)
+All fuzzy finding uses `folke/snacks.nvim`'s picker (files via `fdfind`, grep via `rg`); LSP navigation keymaps are snacks pickers too. Customisations in the snacks spec in `lua/custom/plugins/init.lua`:
 
-### Custom Plugin Highlights
+- **Grep ranking** (`grep`, `grep_word`, `grep_buffers`): `search.rank_grep` transform adds `score_add` per match — declarations boosted, comment lines/trailing comments and doc/lock files demoted. `matcher.sort_empty = true` is required because live grep has no fuzzy pattern; sort is `score:desc, idx` so ties keep rg's file grouping.
+- **In-picker keys**: `<a-t>` filter by file type (rg `--type` for grep, extensions for files); `<a-c>` toggle `code_only` (hide comment matches) in grep. Inline rg args also work: `pattern -- -t py` or `pattern -- -g *.vue`.
+- **Files**: frecency + cwd bonus enabled.
 
-- **nvim-tree**: File tree explorer (`<leader>tf` to toggle)
-- **toggleterm**: Terminal integration (`<leader>tt`, uses Fish shell at `/run/current-system/sw/bin/fish`)
-- **flash.nvim**: Fast navigation with `s` key
-- **nvim-spectre**: Find and replace (`<leader>fg`)
-- **workspace-diagnostics**: Workspace-wide diagnostics (`<leader>x`)
-- **zen-mode**: Distraction-free writing (`<leader>zen`)
-- **nvim-ufo**: Advanced code folding with Treesitter/LSP support and custom fold text display
+### Other Key Plugins
+
+- **Treesitter**: syntax highlighting and code understanding
+- **Conform.nvim**: formatting; format on save enabled except for C/C++
+- **Mini.nvim**: statusline, surround, text objects
+- **Which-key**: shows pending keybinds
+- **snacks.nvim**: also provides the explorer (file tree), floating terminal (Fish when available), dashboard, `vim.ui.input`, smooth scroll
+- **trouble.nvim**: diagnostics/symbols/quickfix lists
+- **nvim-ufo**: folding with Treesitter/LSP providers and custom fold text
+- **claudecode.nvim**: Claude Code integration
 
 ## Common Commands
 
@@ -74,7 +72,6 @@ This is a personal Neovim configuration based on kickstart.nvim. It's a single-f
 ### LSP & Tools
 ```vim
 :Mason             " Open Mason UI to manage LSP servers/tools (press g? for help)
-:LspInfo           " Show LSP client status
 :checkhealth       " Check Neovim health (useful for debugging)
 ```
 
@@ -82,68 +79,64 @@ This is a personal Neovim configuration based on kickstart.nvim. It's a single-f
 ```bash
 nvim --headless +q 2>&1  # Test for startup errors
 ```
+Pickers can be exercised headlessly too: open one with `Snacks.picker.grep({ search = '...', live = false })`, `vim.wait` until `not p:is_active()`, then read the sorted view with `p.list:get(i)` (`p.list.items` is unsorted arrival order).
 
 ## Key Mappings (Leader = Space)
 
-### Navigation & Search
-- `<leader>sf`: Search files
-- `<leader>sg`: Search by grep (live)
-- `<leader>sw`: Search current word
-- `<leader>sd`: Search diagnostics
-- `<leader>sh`: Search help
-- `<leader>/`: Fuzzy search in current buffer
+### Search (snacks.picker)
+- `<leader>sf`: Search files · `<leader>sa`: all files (hidden + ignored)
+- `<leader>sg`: Live grep · `<leader>sw`: grep current word · `<leader>s/`: grep open buffers
+- `<leader>sd`: Diagnostics · `<leader>sh`: Help · `<leader>sk`: Keymaps
+- `<leader>sr`: Resume last picker · `<leader>s.`: Recent files · `<leader>ss`: Select picker
+- `<leader><leader>`: Buffers · `<leader>/`: Fuzzy search in current buffer
 - `<leader>sn`: Search Neovim config files
 
 ### LSP
-- `grd`: Go to definition
-- `grr`: Go to references
-- `gri`: Go to implementation
-- `grt`: Go to type definition
-- `grn`: Rename symbol
-- `gra`: Code action
-- `grq`: Show documentation (hover)
-- `gO`: Document symbols
-- `gW`: Workspace symbols
-
-### Custom Tools
-- `<leader>tf`: Toggle file tree (nvim-tree)
-- `<leader>ff`: Find current buffer in file tree
-- `<leader>tt`: Toggle terminal (toggleterm)
-- `<leader>fg`: Find and replace (Spectre)
-- `<leader>x`: Populate workspace diagnostics
-- `<leader>zen`: Toggle zen mode
-- `<leader>f`: Format buffer
-- `s`: Flash jump (in normal/visual/operator mode)
-
-### Toggle
+- `grd` definition · `grr` references · `gri` implementation · `grt` type definition
+- `grn` rename · `gra` code action
+- `gO` document symbols · `gW` workspace symbols
 - `<leader>th`: Toggle inlay hints
 
+### Git
+- `<leader>gh`: File history (snacks git log) · `<leader>gH`: File history (Diffview)
+- `<leader>gd`: Diffview open · `<leader>gq`: Diffview close
+- `<leader>h*`: gitsigns hunk actions (`hs` stage, `hr` reset, `hS` stage buffer, `hu` undo stage)
+- `<leader>tb`: Toggle line blame
+
+### Diagnostics (trouble / workspace-diagnostics)
+- `<leader>xx`: Diagnostics · `<leader>xX`: Buffer diagnostics · `<leader>xQ`: Quickfix list
+- `<leader>xw`: Populate workspace diagnostics
+- `<leader>cs`: Symbols · `<leader>cl`: LSP definitions/references
+
+### Claude Code (`<leader>a`)
+- `ac` toggle · `af` focus · `ar` resume · `aC` continue · `am` select model
+- `ab` add buffer · `as` send selection (visual) · `aa` / `ad` accept / deny diff
+- `<C-a>f` (terminal): focus away from Claude
+
+### Other Tools
+- `<leader>tf`: Toggle file explorer (snacks)
+- `<leader>tt`: Toggle floating terminal (snacks)
+- `<leader>fg`: Find and replace (Spectre)
+- `<leader>f`: Format buffer
+- `<leader>zen`: Zen mode
+- `<leader>rmt` / `<leader>rmp`: Markdown preview toggle / open
+- `s`: Flash jump (normal/visual/operator) · `<C-s>` in cmdline: toggle Flash search
+
 ### Folding (nvim-ufo)
-- `za`: Toggle fold under cursor
-- `zo`: Open fold under cursor
-- `zc`: Close fold under cursor
-- `zR`: Open all folds
-- `zM`: Close all folds
-- `zr`: Open one fold level
-- `zm`: Close one fold level
+- `za`/`zo`/`zc`: toggle/open/close fold · `zR`/`zM`: open/close all · `zr`/`zm`: open/close one level
 
 ## Important Configuration Details
 
 ### Neovim 0.11+ Migration
-When updating LSP configurations, always use `vim.lsp.config[server_name] = config_table` instead of the old `require('lspconfig')[server_name].setup(config_table)` pattern. The lspconfig framework is deprecated as of Neovim 0.11.
+When updating LSP configurations, always use `vim.lsp.config[server_name] = config_table` + `vim.lsp.enable(server_name)` instead of `require('lspconfig')[server_name].setup(config_table)`.
 
-### Shell Configuration
-- On Windows: Uses PowerShell
-- On Linux (this system): Uses Fish shell for integrated terminal (`/run/current-system/sw/bin/fish`)
+### Formatting (conform.nvim)
+- lua → stylua · python → black · typescript/tsx/vue → prettier · php → mago_format · sql/mysql → sql_formatter
+- Format on save for all filetypes except C/C++; LSP formatting as fallback
+- A `phpfixer` formatter (`./bin/phpfixer`) is defined but not assigned to any filetype
 
-### Formatting
-- Format on save is enabled by default for most languages (init.lua:744-757)
-- C and C++ have format-on-save disabled
-- PHP uses custom formatter at `./bin/phpfixer` (must exist in project root)
-- Manual formatting: `<leader>f`
-
-### Volar (Vue) Configuration
-The Vue language server (volar) has `hybridMode: false` and uses TypeScript SDK from `~/.local/share/.npm-global/lib/node_modules/typescript/lib` (init.lua:674-684).
+### Shell
+- The snacks terminal uses `fish` when it is executable, otherwise `vim.o.shell`.
 
 ## File Locations
 
@@ -154,6 +147,4 @@ The Vue language server (volar) has `hybridMode: false` and uses TypeScript SDK 
 
 ## Extending Configuration
 
-To add new plugins, create files in `lua/custom/plugins/` that return a table of plugin specifications. They will be automatically loaded via the import statement at init.lua:303.
-
-For optional kickstart plugins, uncomment the relevant require statements at init.lua:292-297.
+To add new plugins, create files in `lua/custom/plugins/` that return a table of plugin specifications; they are loaded automatically. For optional kickstart plugins, uncomment the relevant `require 'kickstart.plugins.<name>'` lines in `init.lua`.

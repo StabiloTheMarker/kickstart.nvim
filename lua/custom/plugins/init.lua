@@ -107,15 +107,35 @@ return {
     ---@type snacks.Config
     opts = {
       input = { enabled = true },
-      picker = {
-        enabled = true,
-        sources = {
-          explorer = {
-            ignored = true,
-            hidden = true,
+      picker = (function()
+        local search = require 'custom.search'
+        local ft_key = { ['<a-t>'] = { 'filter_filetype', mode = { 'i', 'n' } } }
+        -- Grep: code above comments/docs, <a-c> hides comments, <a-t> filters by filetype
+        local grep = {
+          transform = search.rank_grep,
+          matcher = { sort_empty = true }, -- live grep has no fuzzy pattern, so sort anyway
+          sort = { fields = { 'score:desc', 'idx' } }, -- keep rg order (grouped by file) within a score
+          toggles = { code_only = 'C' },
+          win = { input = { keys = vim.tbl_extend('force', ft_key, { ['<a-c>'] = { 'toggle_code_only', mode = { 'i', 'n' } } }) } },
+        }
+        return {
+          enabled = true,
+          actions = { filter_filetype = search.filter_filetype },
+          sources = {
+            explorer = {
+              ignored = true,
+              hidden = true,
+            },
+            files = {
+              matcher = { frecency = true, cwd_bonus = true },
+              win = { input = { keys = ft_key } },
+            },
+            grep = grep,
+            grep_word = grep,
+            grep_buffers = grep,
           },
-        },
-      },
+        }
+      end)(),
       explorer = { enabled = true },
       scroll = { enabled = true },
       dashboard = {
