@@ -289,7 +289,7 @@ return {
       { '<leader>av', function() require('custom.claude_changes').diff_file() end, desc = 'View Claude diff of file' },
       { '<leader>aF', function() require('custom.claude_changes').toggle_follow() end, desc = 'Toggle follow Claude edits' },
       { '<leader>ax', function() require('custom.claude_changes').checkpoint() end, desc = 'Checkpoint Claude changes' },
-      { '<C-a>f', [[<C-\><C-n><C-w>p]], mode = 't', desc = 'Focus away from Claude' },
+      { '<A-f>', [[<C-\><C-n><C-w>p]], mode = 't', desc = 'Focus away from Claude' },
     },
   },
   -- CSV viewer with column alignment

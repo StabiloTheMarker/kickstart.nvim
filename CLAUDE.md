@@ -117,7 +117,7 @@ Pickers can be exercised headlessly too: open one with `Snacks.picker.grep({ sea
 - `ac` toggle · `af` focus · `ar` resume · `aC` continue · `am` select model
 - `ab` add buffer · `as` send selection (visual) · `aa` / `ad` accept / deny diff
 - `al` list Claude's changes (hunk picker, `<a-d>` side-by-side diff) · `av` diff current file vs. before Claude · `aF` toggle follow Claude edits · `ax` checkpoint (mark changes reviewed)
-- `<C-a>f` (terminal): focus away from Claude
+- `<A-f>` (terminal): focus away from Claude
 
 ### Other Tools
 - `<leader>tf`: Toggle file explorer (snacks)
