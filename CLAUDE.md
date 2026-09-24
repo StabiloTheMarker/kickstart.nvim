@@ -19,6 +19,7 @@ Line numbers drift as the config changes, so this file refers to sections by nam
   - `markdown.lua`: markdown-preview.nvim
   - `lsp.lua`: commented-out leftovers, not active
 - **`lua/custom/search.lua`**: Helper module (not a plugin spec) for the snacks grep/files pickers — result ranking and the filetype filter action.
+- **`lua/custom/claude_changes.lua`** + **`bin/claude-nvim-hook`**: Tracks files Claude Code edits (see "Claude change tracking" below).
 - **`lua/kickstart/plugins/*.lua`**: Optional kickstart examples, enabled by uncommenting their `require 'kickstart.plugins.<name>'` lines near the end of the lazy setup in `init.lua`. All are currently disabled.
 
 ### Plugin Management
@@ -47,6 +48,10 @@ All fuzzy finding uses `folke/snacks.nvim`'s picker (files via `fdfind`, grep vi
 - **Grep ranking** (`grep`, `grep_word`, `grep_buffers`): `search.rank_grep` transform adds `score_add` per match — declarations boosted, comment lines/trailing comments and doc/lock files demoted. `matcher.sort_empty = true` is required because live grep has no fuzzy pattern; sort is `score:desc, idx` so ties keep rg's file grouping.
 - **In-picker keys**: `<a-t>` filter by file type (rg `--type` for grep, extensions for files); `<a-c>` toggle `code_only` (hide comment matches) in grep. Inline rg args also work: `pattern -- -t py` or `pattern -- -g *.vue`.
 - **Files**: frecency + cwd bonus enabled.
+
+### Claude change tracking
+
+`bin/claude-nvim-hook` is registered in `~/.claude/settings.json` as a PreToolUse/PostToolUse hook for `Edit|Write|MultiEdit|NotebookEdit`. When Claude runs in a Neovim terminal (`$NVIM` set) it calls `require('custom.claude_changes').hook(event, path, cwd)` via `nvim --server $NVIM --remote-expr`; outside Neovim it is a no-op. PreToolUse stores the file's content as the baseline (first edit only); PostToolUse reloads the buffer and, in follow mode, shows the change. Edits Claude makes through Bash (sed, scripts) are not seen — use git/Diffview for those. Test it by starting `nvim --headless --listen <sock>` and piping hook JSON into the script with `NVIM=<sock>`.
 
 ### Other Key Plugins
 
@@ -111,6 +116,7 @@ Pickers can be exercised headlessly too: open one with `Snacks.picker.grep({ sea
 ### Claude Code (`<leader>a`)
 - `ac` toggle · `af` focus · `ar` resume · `aC` continue · `am` select model
 - `ab` add buffer · `as` send selection (visual) · `aa` / `ad` accept / deny diff
+- `al` list Claude's changes (hunk picker, `<a-d>` side-by-side diff) · `av` diff current file vs. before Claude · `aF` toggle follow Claude edits · `ax` checkpoint (mark changes reviewed)
 - `<C-a>f` (terminal): focus away from Claude
 
 ### Other Tools

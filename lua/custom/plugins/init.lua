@@ -284,6 +284,11 @@ return {
       { '<leader>as', '<cmd>ClaudeCodeSend<cr>', mode = 'v', desc = 'Send selection' },
       { '<leader>aa', '<cmd>ClaudeCodeDiffAccept<cr>', desc = 'Accept diff' },
       { '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>', desc = 'Deny diff' },
+      -- Changes Claude made (tracked via bin/claude-nvim-hook, see lua/custom/claude_changes.lua)
+      { '<leader>al', function() require('custom.claude_changes').pick() end, desc = 'List Claude changes' },
+      { '<leader>av', function() require('custom.claude_changes').diff_file() end, desc = 'View Claude diff of file' },
+      { '<leader>aF', function() require('custom.claude_changes').toggle_follow() end, desc = 'Toggle follow Claude edits' },
+      { '<leader>ax', function() require('custom.claude_changes').checkpoint() end, desc = 'Checkpoint Claude changes' },
       { '<C-a>f', [[<C-\><C-n><C-w>p]], mode = 't', desc = 'Focus away from Claude' },
     },
   },
